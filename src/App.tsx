@@ -23,11 +23,13 @@ import {
   Users,
   Wrench,
   ZoomIn,
-  ZoomOut
+  ZoomOut,
+  Info
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { jsPDF } from 'jspdf';
 import autoTable from 'jspdf-autotable';
+import Showcase from './components/Showcase';
 
 // Logo URL provided by user
 const HOSPITAL_LOGO_URL = 'https://i.ibb.co/v6drnf84/logo.png';
@@ -35,8 +37,8 @@ const HOSPITAL_LOGO_URL = 'https://i.ibb.co/v6drnf84/logo.png';
 const TECHNICIANS = ['ERIAN', 'DAVI', 'YURI', 'ANY INDRIELLY'];
 
 const SOUNDS = {
-  ok: 'https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3',
-  issue: 'https://assets.mixkit.co/active_storage/sfx/2572/2572-preview.mp3'
+  ok: 'https://actions.google.com/sounds/v1/alarms/beep_short.ogg?hl=pt-br',
+  issue: 'https://assets.mixkit.co/sfx/preview/mixkit-negative-answer-740.mp3'
 };
 
 const COMMON_ISSUES = [
@@ -182,6 +184,7 @@ export default function App() {
   });
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedSector, setSelectedSector] = useState<{catId: string, sectorId: string} | null>(null);
+  const [showShowcase, setShowShowcase] = useState(false);
   const [selectedTechs, setSelectedTechs] = useState<string[]>([]);
   const [fontSize, setFontSize] = useState(() => {
     const saved = localStorage.getItem('hospital-ti-fontsize');
@@ -212,8 +215,10 @@ export default function App() {
 
     if (finalStatus !== 'pending') {
       const audio = new Audio(finalStatus === 'ok' ? SOUNDS.ok : SOUNDS.issue);
-      audio.play().catch(() => {
-        // Ignore errors if browser blocks autoplay
+      audio.volume = 0.5;
+      audio.preload = 'auto';
+      audio.play().catch((err) => {
+        console.warn('Audio playback failed:', err);
       });
     }
     setCategories(prev => prev.map(cat => {
@@ -364,6 +369,13 @@ export default function App() {
               </div>
             </div>
             <div className="flex items-center gap-2">
+              <button 
+                onClick={() => setShowShowcase(true)}
+                className="p-2 text-slate-400 hover:text-[#F27D26] hover:bg-orange-50 rounded-full transition-colors"
+                title="Conhecer Sistema"
+              >
+                <Info className="w-5 h-5" />
+              </button>
               <button 
                 onClick={resetChecklist}
                 className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-full transition-colors"
@@ -594,6 +606,15 @@ export default function App() {
       >
         <div className="bg-white/90 backdrop-blur-md border border-slate-200 rounded-2xl p-1.5 shadow-xl flex flex-col items-center gap-1">
           <button 
+            onClick={() => setShowShowcase(true)}
+            className="w-12 h-12 flex items-center justify-center text-[#F27D26] hover:bg-slate-100 rounded-xl transition-all active:scale-90"
+            title="Conhecer Sistema"
+            onPointerDown={(e) => e.stopPropagation()}
+          >
+            <Info className="w-6 h-6" />
+          </button>
+          <div className="w-8 h-px bg-slate-100" />
+          <button 
             onClick={() => setFontSize(prev => Math.min(200, prev + 15))}
             className="w-12 h-12 flex items-center justify-center text-slate-600 hover:bg-slate-100 rounded-xl transition-all active:scale-90"
             title="Aumentar Zoom"
@@ -612,6 +633,8 @@ export default function App() {
           </button>
         </div>
       </motion.div>
+
+      <Showcase isOpen={showShowcase} onClose={() => setShowShowcase(false)} />
 
       {/* Summary Footer */}
       <footer className="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 p-4 shadow-2xl z-40">
