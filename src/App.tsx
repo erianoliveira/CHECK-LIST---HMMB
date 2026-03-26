@@ -31,6 +31,38 @@ const HOSPITAL_LOGO_URL = 'https://i.ibb.co/v6drnf84/logo.png';
 
 const TECHNICIANS = ['ERIAN', 'DAVI', 'YURI', 'ANY INDRIELLY'];
 
+const SOUNDS = {
+  ok: 'https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3',
+  issue: 'https://assets.mixkit.co/active_storage/sfx/2572/2572-preview.mp3'
+};
+
+const COMMON_ISSUES = [
+  {
+    category: '🖥️ Infraestrutura',
+    issues: ['Queda ou lentidão da rede/internet', 'Wi-Fi instável']
+  },
+  {
+    category: '💻 Sistemas',
+    issues: ['Sistema fora do ar ou lento', 'Erros de acesso/login']
+  },
+  {
+    category: '🖨️ Equipamentos',
+    issues: ['Impressoras com falha', 'Computadores travando']
+  },
+  {
+    category: '🔐 Segurança',
+    issues: ['Senhas compartilhadas', 'Vírus ou falta de backup']
+  },
+  {
+    category: '👨‍⚕️ Usuários',
+    issues: ['Falta de treinamento', 'Chamados repetitivos']
+  },
+  {
+    category: '📞 Telefone',
+    issues: ['Telefone mudo / sem sinal', 'Problemas no ramal']
+  }
+];
+
 // Types
 type SectorStatus = 'pending' | 'ok' | 'issue';
 
@@ -138,6 +170,12 @@ export default function App() {
   }, [categories]);
 
   const updateStatus = (catId: string, sectorId: string, status: SectorStatus) => {
+    if (status !== 'pending') {
+      const audio = new Audio(status === 'ok' ? SOUNDS.ok : SOUNDS.issue);
+      audio.play().catch(() => {
+        // Ignore errors if browser blocks autoplay
+      });
+    }
     setCategories(prev => prev.map(cat => {
       if (cat.id !== catId) return cat;
       return {
@@ -426,14 +464,44 @@ export default function App() {
                           exit={{ height: 0, opacity: 0 }}
                           className="overflow-hidden border-t border-slate-100 bg-slate-50/50"
                         >
-                          <div className="p-4 space-y-3">
-                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Relato Técnico</label>
-                            <textarea 
-                              className="w-full p-3 text-sm bg-white border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#F27D26]/20 focus:border-[#F27D26] min-h-[100px] resize-none shadow-inner"
-                              placeholder="Descreva problemas técnicos, equipamentos verificados ou pendências..."
-                              value={sector.notes}
-                              onChange={(e) => updateNotes(category.id, sector.id, e.target.value)}
-                            />
+                          <div className="p-4 space-y-4">
+                            <div className="space-y-3">
+                              <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Problemas Comuns</label>
+                              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                                {COMMON_ISSUES.map((group) => (
+                                  <div key={group.category} className="space-y-1.5">
+                                    <p className="text-[9px] font-bold text-slate-500 uppercase tracking-wider">{group.category}</p>
+                                    <div className="flex flex-wrap gap-1.5">
+                                      {group.issues.map((issue) => (
+                                        <button
+                                          key={issue}
+                                          onClick={() => {
+                                            const currentNotes = sector.notes.trim();
+                                            const newNote = currentNotes ? `${currentNotes}\n- ${issue}` : `- ${issue}`;
+                                            updateNotes(category.id, sector.id, newNote);
+                                            updateStatus(category.id, sector.id, 'issue');
+                                          }}
+                                          className="px-2 py-1 bg-white border border-slate-200 rounded text-[10px] text-slate-600 hover:border-[#F27D26] hover:text-[#F27D26] transition-colors text-left"
+                                        >
+                                          {issue}
+                                        </button>
+                                      ))}
+                                    </div>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+
+                            <div className="space-y-2">
+                              <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Relato Técnico / Outros</label>
+                              <textarea 
+                                className="w-full p-3 text-sm bg-white border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#F27D26]/20 focus:border-[#F27D26] min-h-[100px] resize-none shadow-inner"
+                                placeholder="Descreva outros problemas ou detalhes adicionais..."
+                                value={sector.notes}
+                                onChange={(e) => updateNotes(category.id, sector.id, e.target.value)}
+                              />
+                            </div>
+                            
                             <div className="flex justify-end">
                               <button 
                                 onClick={() => setSelectedSector(null)}
