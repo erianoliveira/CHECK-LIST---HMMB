@@ -103,6 +103,8 @@ const INITIAL_DATA: Category[] = [
       { id: 'centro-cirurgico', name: 'Centro Cirúrgico', status: 'pending', notes: '' },
       { id: 'centro-obstetrico', name: 'Centro Obstétrico', status: 'pending', notes: '' },
       { id: 'regulacao', name: 'Regulação (NIR)', status: 'pending', notes: '' },
+      { id: 'postinho-emergencia', name: 'Postinho da Emergência', status: 'pending', notes: '' },
+      { id: 'postinho-enfermagem', name: 'Postinho Enfermagem', status: 'pending', notes: '' },
     ]
   },
   {
@@ -154,12 +156,26 @@ export default function App() {
     if (!saved) return INITIAL_DATA;
     
     try {
-      const parsed = JSON.parse(saved);
-      // Simple migration: if the first category doesn't have iconId, it's the old format
+      const parsed = JSON.parse(saved) as Category[];
+      
+      // Migration: if the first category doesn't have iconId, it's the old format
       if (parsed.length > 0 && !parsed[0].iconId) {
         return INITIAL_DATA;
       }
-      return parsed;
+
+      // Merge INITIAL_DATA with saved data to ensure new sectors are added
+      return INITIAL_DATA.map(initialCat => {
+        const savedCat = parsed.find(c => c.id === initialCat.id);
+        if (!savedCat) return initialCat;
+
+        return {
+          ...initialCat,
+          sectors: initialCat.sectors.map(initialSector => {
+            const savedSector = savedCat.sectors.find(s => s.id === initialSector.id);
+            return savedSector || initialSector;
+          })
+        };
+      });
     } catch (e) {
       return INITIAL_DATA;
     }
