@@ -270,17 +270,19 @@ export default function App() {
       <header className="bg-white border-b border-slate-200 sticky top-0 z-30">
         <div className="max-w-4xl mx-auto px-4 py-4">
           <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-3 sm:gap-4">
               <img 
                 src={HOSPITAL_LOGO_URL} 
                 alt="Logo HMMB" 
-                className="h-12 w-auto object-contain"
+                className="h-10 sm:h-12 w-auto object-contain"
                 referrerPolicy="no-referrer"
               />
               <div className="h-8 w-px bg-slate-200 hidden sm:block" />
               <div>
-                <h1 className="text-xl font-black tracking-tighter text-[#F27D26]">CHECKLIST TI</h1>
-                <p className="text-[10px] text-slate-500 font-bold uppercase tracking-[0.2em]">HMMB - HOSPITAL MUNICIPAL MONSENHOR BERENGUER</p>
+                <h1 className="text-xl sm:text-2xl font-black tracking-tighter text-[#F27D26] leading-none">CHECKLIST TI</h1>
+                <p className="text-[8px] sm:text-[10px] text-slate-500 font-bold uppercase tracking-[0.1em] sm:tracking-[0.2em] mt-1 border-l-2 border-[#F27D26] pl-2 max-w-[180px] sm:max-w-none">
+                  HMMB - HOSPITAL MUNICIPAL MONSENHOR BERENGUER
+                </p>
               </div>
             </div>
             <button 
@@ -500,7 +502,7 @@ export default function App() {
                 navigator.clipboard.writeText(text);
                 alert('Relatório completo copiado para a área de transferência!');
               }}
-              className="bg-slate-100 text-slate-700 px-4 py-3 rounded-xl font-black text-[11px] uppercase tracking-widest hover:bg-slate-200 transition-all flex items-center gap-2 active:scale-95"
+              className="bg-slate-100 text-slate-700 px-3 py-2.5 rounded-xl font-black text-[11px] uppercase tracking-widest hover:bg-slate-200 transition-all flex items-center gap-2 active:scale-95"
               title="Copiar Texto"
             >
               <MessageSquare className="w-4 h-4" />
@@ -508,7 +510,7 @@ export default function App() {
 
             <button 
               onClick={generatePDF}
-              className="bg-[#F27D26] text-white px-6 py-3 rounded-xl font-black text-[11px] uppercase tracking-widest hover:bg-[#d66a1e] transition-all flex items-center gap-2 shadow-lg active:scale-95"
+              className="bg-[#F27D26] text-white px-4 py-2.5 rounded-xl font-black text-[11px] uppercase tracking-widest hover:bg-[#d66a1e] transition-all flex items-center gap-2 shadow-lg active:scale-95"
             >
               <FileText className="w-4 h-4" /> Gerar Relatório
             </button>
