@@ -20,7 +20,8 @@ import {
   MessageSquare,
   Save,
   FileText,
-  Users
+  Users,
+  Wrench
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { jsPDF } from 'jspdf';
@@ -47,7 +48,7 @@ const COMMON_ISSUES = [
   },
   {
     category: '🖨️ Equipamentos',
-    issues: ['Impressoras com falha', 'Computadores travando']
+    issues: ['Impressoras com falha', 'Limpar cabeçote', 'Abastecer com tinta', 'Computadores travando']
   },
   {
     category: '🔐 Segurança',
@@ -164,14 +165,34 @@ export default function App() {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedSector, setSelectedSector] = useState<{catId: string, sectorId: string} | null>(null);
   const [selectedTechs, setSelectedTechs] = useState<string[]>([]);
+  const [fontSize, setFontSize] = useState(() => {
+    const saved = localStorage.getItem('hospital-ti-fontsize');
+    return saved ? parseInt(saved) : 100;
+  });
 
   useEffect(() => {
     localStorage.setItem('hospital-ti-checklist', JSON.stringify(categories));
   }, [categories]);
 
+  useEffect(() => {
+    localStorage.setItem('hospital-ti-fontsize', fontSize.toString());
+  }, [fontSize]);
+
   const updateStatus = (catId: string, sectorId: string, status: SectorStatus) => {
-    if (status !== 'pending') {
-      const audio = new Audio(status === 'ok' ? SOUNDS.ok : SOUNDS.issue);
+    // Logic: OK status only if no notes/problems
+    let finalStatus = status;
+    
+    if (status === 'ok') {
+      const category = categories.find(c => c.id === catId);
+      const sector = category?.sectors.find(s => s.id === sectorId);
+      if (sector && sector.notes.trim() !== '') {
+        finalStatus = 'pending';
+        alert('Não é possível marcar como OK se houver problemas relatados. Limpe as notas primeiro.');
+      }
+    }
+
+    if (finalStatus !== 'pending') {
+      const audio = new Audio(finalStatus === 'ok' ? SOUNDS.ok : SOUNDS.issue);
       audio.play().catch(() => {
         // Ignore errors if browser blocks autoplay
       });
@@ -180,7 +201,7 @@ export default function App() {
       if (cat.id !== catId) return cat;
       return {
         ...cat,
-        sectors: cat.sectors.map(s => s.id === sectorId ? { ...s, status } : s)
+        sectors: cat.sectors.map(s => s.id === sectorId ? { ...s, status: finalStatus } : s)
       };
     }));
   };
@@ -303,7 +324,7 @@ export default function App() {
   })).filter(cat => cat.sectors.length > 0);
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC] text-[#1E293B] font-sans">
+    <div className="min-h-screen bg-[#F8FAFC] text-[#1E293B] font-sans" style={{ fontSize: `${fontSize}%` }}>
       {/* Header */}
       <header className="bg-white border-b border-slate-200 sticky top-0 z-30">
         <div className="max-w-4xl mx-auto px-4 py-4">
@@ -323,13 +344,15 @@ export default function App() {
                 </p>
               </div>
             </div>
-            <button 
-              onClick={resetChecklist}
-              className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-full transition-colors"
-              title="Resetar Checklist"
-            >
-              <RotateCcw className="w-5 h-5" />
-            </button>
+            <div className="flex items-center gap-2">
+              <button 
+                onClick={resetChecklist}
+                className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-full transition-colors"
+                title="Resetar Checklist"
+              >
+                <RotateCcw className="w-5 h-5" />
+              </button>
+            </div>
           </div>
 
           {/* Progress Bar */}
@@ -531,6 +554,27 @@ export default function App() {
         )}
       </main>
 
+      {/* Floating Accessibility Control */}
+      <div className="fixed bottom-24 left-4 z-50 flex flex-col gap-2">
+        <div className="bg-white/80 backdrop-blur-sm border border-slate-200 rounded-xl p-1 shadow-lg flex flex-col items-center gap-1">
+          <button 
+            onClick={() => setFontSize(prev => Math.min(150, prev + 10))}
+            className="w-10 h-10 flex items-center justify-center text-xs font-black hover:bg-slate-100 rounded-lg transition-colors text-slate-600"
+            title="Aumentar Letra"
+          >
+            A+
+          </button>
+          <div className="w-6 h-px bg-slate-200" />
+          <button 
+            onClick={() => setFontSize(prev => Math.max(80, prev - 10))}
+            className="w-10 h-10 flex items-center justify-center text-xs font-black hover:bg-slate-100 rounded-lg transition-colors text-slate-600"
+            title="Diminuir Letra"
+          >
+            A-
+          </button>
+        </div>
+      </div>
+
       {/* Summary Footer */}
       <footer className="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 p-4 shadow-2xl z-40">
         <div className="max-w-4xl mx-auto flex items-center justify-between">
@@ -546,6 +590,17 @@ export default function App() {
           </div>
           
           <div className="flex gap-2">
+            <a 
+              href="https://hmmb.vercel.app/" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="bg-[#F27D26] text-white px-3 py-2.5 rounded-xl font-black text-[11px] uppercase tracking-widest hover:bg-[#d66a1e] transition-all flex items-center gap-2 shadow-lg active:scale-95"
+              title="Abrir Chamado (Help Desk)"
+            >
+              <Wrench className="w-4 h-4" />
+              <span className="hidden sm:inline">Abrir Chamado</span>
+            </a>
+
             <button 
               onClick={() => {
                 const report = categories.map(cat => {
