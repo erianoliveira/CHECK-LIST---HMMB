@@ -176,6 +176,7 @@ export default function App() {
 
   useEffect(() => {
     localStorage.setItem('hospital-ti-fontsize', fontSize.toString());
+    document.documentElement.style.fontSize = `${fontSize}%`;
   }, [fontSize]);
 
   const updateStatus = (catId: string, sectorId: string, status: SectorStatus) => {
@@ -324,7 +325,7 @@ export default function App() {
   })).filter(cat => cat.sectors.length > 0);
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC] text-[#1E293B] font-sans" style={{ fontSize: `${fontSize}%` }}>
+    <div className="min-h-screen bg-[#F8FAFC] text-[#1E293B] font-sans">
       {/* Header */}
       <header className="bg-white border-b border-slate-200 sticky top-0 z-30">
         <div className="max-w-4xl mx-auto px-4 py-4">
