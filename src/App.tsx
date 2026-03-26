@@ -21,7 +21,9 @@ import {
   Save,
   FileText,
   Users,
-  Wrench
+  Wrench,
+  ZoomIn,
+  ZoomOut
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { jsPDF } from 'jspdf';
@@ -339,8 +341,8 @@ export default function App() {
               />
               <div className="h-8 w-px bg-slate-200 hidden sm:block" />
               <div>
-                <h1 className="text-xl sm:text-2xl font-black tracking-tighter text-[#F27D26] leading-none">Checklist - TI - HMMB</h1>
-                <p className="text-[8px] sm:text-[10px] text-slate-500 font-bold uppercase tracking-[0.1em] sm:tracking-[0.2em] mt-1 border-l-2 border-[#F27D26] pl-2 max-w-[180px] sm:max-w-none">
+                <h1 className="text-base sm:text-2xl font-black tracking-tighter text-[#F27D26] leading-none">Checklist - TI - HMMB</h1>
+                <p className="text-[7px] sm:text-[10px] text-slate-500 font-bold uppercase tracking-[0.1em] sm:tracking-[0.2em] mt-1 border-l-2 border-[#F27D26] pl-2 max-w-[150px] sm:max-w-none">
                   HMMB - HOSPITAL MUNICIPAL MONSENHOR BERENGUER
                 </p>
               </div>
@@ -557,21 +559,21 @@ export default function App() {
 
       {/* Floating Accessibility Control */}
       <div className="fixed bottom-24 left-4 z-50 flex flex-col gap-2">
-        <div className="bg-white/80 backdrop-blur-sm border border-slate-200 rounded-xl p-1 shadow-lg flex flex-col items-center gap-1">
+        <div className="bg-white/90 backdrop-blur-md border border-slate-200 rounded-2xl p-1.5 shadow-xl flex flex-col items-center gap-1">
           <button 
-            onClick={() => setFontSize(prev => Math.min(150, prev + 10))}
-            className="w-10 h-10 flex items-center justify-center text-xs font-black hover:bg-slate-100 rounded-lg transition-colors text-slate-600"
-            title="Aumentar Letra"
+            onClick={() => setFontSize(prev => Math.min(200, prev + 15))}
+            className="w-12 h-12 flex items-center justify-center text-slate-600 hover:bg-slate-100 rounded-xl transition-all active:scale-90"
+            title="Aumentar Zoom"
           >
-            A+
+            <ZoomIn className="w-6 h-6" />
           </button>
-          <div className="w-6 h-px bg-slate-200" />
+          <div className="w-8 h-px bg-slate-100" />
           <button 
-            onClick={() => setFontSize(prev => Math.max(80, prev - 10))}
-            className="w-10 h-10 flex items-center justify-center text-xs font-black hover:bg-slate-100 rounded-lg transition-colors text-slate-600"
-            title="Diminuir Letra"
+            onClick={() => setFontSize(prev => Math.max(80, prev - 15))}
+            className="w-12 h-12 flex items-center justify-center text-slate-600 hover:bg-slate-100 rounded-xl transition-all active:scale-90"
+            title="Diminuir Zoom"
           >
-            A-
+            <ZoomOut className="w-6 h-6" />
           </button>
         </div>
       </div>
