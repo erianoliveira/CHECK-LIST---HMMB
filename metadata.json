@@ -1,5 +1,5 @@
 {
-  "name": "CHECKLIST TI",
-  "description": "Aplicativo de checklist diário para técnicos de TI do Hospital Municipal Monsenhor Berenguer (HMMB).",
+  "name": "Checklist - TI - HMMB",
+  "description": "Checklist diário de TI do Hospital Municipal Monsenhor Berenguer.",
   "requestFramePermissions": []
 }

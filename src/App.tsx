@@ -317,7 +317,7 @@ export default function App() {
               />
               <div className="h-8 w-px bg-slate-200 hidden sm:block" />
               <div>
-                <h1 className="text-xl sm:text-2xl font-black tracking-tighter text-[#F27D26] leading-none">CHECKLIST TI</h1>
+                <h1 className="text-xl sm:text-2xl font-black tracking-tighter text-[#F27D26] leading-none">Checklist - TI - HMMB</h1>
                 <p className="text-[8px] sm:text-[10px] text-slate-500 font-bold uppercase tracking-[0.1em] sm:tracking-[0.2em] mt-1 border-l-2 border-[#F27D26] pl-2 max-w-[180px] sm:max-w-none">
                   HMMB - HOSPITAL MUNICIPAL MONSENHOR BERENGUER
                 </p>
