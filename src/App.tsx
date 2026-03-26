@@ -586,12 +586,18 @@ export default function App() {
       </main>
 
       {/* Floating Accessibility Control */}
-      <div className="fixed bottom-24 left-4 z-50 flex flex-col gap-2">
+      <motion.div 
+        drag
+        dragMomentum={false}
+        dragElastic={0.1}
+        className="fixed bottom-24 left-4 z-50 flex flex-col gap-2 cursor-move touch-none"
+      >
         <div className="bg-white/90 backdrop-blur-md border border-slate-200 rounded-2xl p-1.5 shadow-xl flex flex-col items-center gap-1">
           <button 
             onClick={() => setFontSize(prev => Math.min(200, prev + 15))}
             className="w-12 h-12 flex items-center justify-center text-slate-600 hover:bg-slate-100 rounded-xl transition-all active:scale-90"
             title="Aumentar Zoom"
+            onPointerDown={(e) => e.stopPropagation()}
           >
             <ZoomIn className="w-6 h-6" />
           </button>
@@ -600,11 +606,12 @@ export default function App() {
             onClick={() => setFontSize(prev => Math.max(80, prev - 15))}
             className="w-12 h-12 flex items-center justify-center text-slate-600 hover:bg-slate-100 rounded-xl transition-all active:scale-90"
             title="Diminuir Zoom"
+            onPointerDown={(e) => e.stopPropagation()}
           >
             <ZoomOut className="w-6 h-6" />
           </button>
         </div>
-      </div>
+      </motion.div>
 
       {/* Summary Footer */}
       <footer className="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 p-4 shadow-2xl z-40">
