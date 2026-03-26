@@ -342,8 +342,8 @@ export default function App() {
               <div className="h-8 w-px bg-slate-200 hidden sm:block" />
               <div>
                 <h1 className="text-base sm:text-2xl font-black tracking-tighter text-[#F27D26] leading-none">Checklist - TI - HMMB</h1>
-                <p className="text-[7px] sm:text-[10px] text-slate-500 font-bold uppercase tracking-[0.1em] sm:tracking-[0.2em] mt-1 border-l-2 border-[#F27D26] pl-2 max-w-[150px] sm:max-w-none">
-                  HMMB - HOSPITAL MUNICIPAL MONSENHOR BERENGUER
+                <p className="text-[6px] sm:text-[10px] text-slate-500 font-bold uppercase tracking-[0.1em] sm:tracking-[0.2em] mt-1 border-l-2 border-[#F27D26] pl-2 whitespace-nowrap sm:max-w-none overflow-hidden text-ellipsis">
+                  <span className="hidden sm:inline">HMMB - </span>HOSPITAL MUNICIPAL MONSENHOR BERENGUER
                 </p>
               </div>
             </div>
@@ -362,9 +362,21 @@ export default function App() {
           <div className="space-y-4">
             {/* Technician Selection */}
             <div className="bg-slate-50 p-3 rounded-xl border border-slate-100">
-              <div className="flex items-center gap-2 mb-2">
-                <Users className="w-4 h-4 text-[#F27D26]" />
-                <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Técnicos na Ronda</span>
+              <div className="flex items-center justify-between mb-2">
+                <div className="flex items-center gap-2">
+                  <Users className="w-4 h-4 text-[#F27D26]" />
+                  <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Técnicos na Ronda</span>
+                </div>
+                <a 
+                  href="https://hmmb.vercel.app/" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="bg-[#F27D26] text-white px-2 py-1.5 rounded-lg font-black text-[9px] uppercase tracking-widest hover:bg-[#d66a1e] transition-all flex items-center gap-1.5 shadow-sm active:scale-95"
+                  title="Abrir Chamado (Help Desk)"
+                >
+                  <Wrench className="w-3 h-3" />
+                  <span>Abrir Chamado</span>
+                </a>
               </div>
               <div className="flex flex-wrap gap-2">
                 {TECHNICIANS.map(tech => (
@@ -593,17 +605,6 @@ export default function App() {
           </div>
           
           <div className="flex gap-2">
-            <a 
-              href="https://hmmb.vercel.app/" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="bg-[#F27D26] text-white px-3 py-2.5 rounded-xl font-black text-[11px] uppercase tracking-widest hover:bg-[#d66a1e] transition-all flex items-center gap-2 shadow-lg active:scale-95"
-              title="Abrir Chamado (Help Desk)"
-            >
-              <Wrench className="w-4 h-4" />
-              <span className="hidden sm:inline">Abrir Chamado</span>
-            </a>
-
             <button 
               onClick={() => {
                 const report = categories.map(cat => {
